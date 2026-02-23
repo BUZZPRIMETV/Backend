@@ -27,7 +27,7 @@ app.add_middleware(
 app.include_router(auth_router)
 
 @app.get("/")
-def root():
+async def root():
     """Health check endpoint."""
     return {
         "message": "MovieStream API is running",
