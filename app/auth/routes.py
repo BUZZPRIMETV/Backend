@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.auth import schemas, services, utils
 from app.auth.models import User
+import requests
 
+WEBHOOK_URL = "http://localhost:5678/webhook-test/new-user-signup"
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 security = HTTPBearer()  # For extracting Bearer tokens
 
@@ -47,6 +49,26 @@ def signup(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     - Hashes password before storage
     """
     user = services.AuthService.create_user(db, user_data)
+
+    try:
+        payload = {
+            "event": "user_signup",
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "username": user.username,
+                "full_name": user.full_name,
+                "created_at": user.created_at.isoformat()
+            }
+        }
+
+        requests.post(WEBHOOK_URL, json=payload, timeout=3)
+
+    except Exception as e:
+        # Do NOT crash signup if webhook fails
+        print("Webhook failed:", str(e))
+
+
     return user
 
 @router.post("/login", response_model=schemas.Token)
