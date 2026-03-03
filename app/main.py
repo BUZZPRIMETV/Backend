@@ -3,9 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import engine, Base
 from app.auth.routes import router as auth_router
-import traceback
-from fastapi import Request
-from fastapi.responses import JSONResponse
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -45,10 +42,3 @@ def health_check():
     }
 
 
-@app.middleware("http")
-async def show_exceptions(request: Request, call_next):
-    try:
-        return await call_next(request)
-    except Exception as e:
-        traceback.print_exc()  # <-- this will appear in Vercel logs
-        return JSONResponse(status_code=500, content={"detail": str(e)})
