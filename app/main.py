@@ -4,8 +4,6 @@ from app.config import settings
 from app.database import engine, Base
 from app.auth.routes import router as auth_router
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI app
 app = FastAPI(

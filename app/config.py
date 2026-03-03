@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+import os
 
 class Settings(BaseSettings):
     """
@@ -7,7 +8,7 @@ class Settings(BaseSettings):
     Pydantic validates types automatically.
     """
     # Database
-    DATABASE_URL: str
+    DATABASE_URL: str 
     
     # JWT Settings
     SECRET_KEY: str
